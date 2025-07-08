@@ -45,6 +45,7 @@
 #include <string.h>
 #include <scpi/scpi.h>
 #include "scpi-def.h"
+#include "awg.h"
 
 #define SCPI_INPUT_BUFFER_LENGTH 256
 #define SCPI_ERROR_QUEUE_SIZE 17
@@ -126,7 +127,7 @@ static void print_help() {
     printf("  AWG:WAVEform?                    - Query AWG waveform (custom command)\n");
     printf("  AWG:NAME                        - Set AWG name (custom command)\n");
     printf("  AWG:NAME?                        - Query AWG name (custom command)\n");
-    printf(" AWG:ARB:LOAD                     - Load waveform data (custom command)\n");
+    printf("  AWG:ARB:LOAD                     - Load waveform data (custom command)\n");
     printf("  AWG:FREQ:INST?                  - Query AWG instantaneous frequency (custom command)\n");
     printf("  RUN                             - Start AWG (custom command)\n");
     printf("  help                            - Show this help\n");
@@ -164,6 +165,7 @@ int main(int argc, char* argv[]) {
     /* Initialize SCPI context */
     SCPI_Init(&scpi_context,
              scpi_commands,
+             //scpi_AwgCommands,
              &scpi_interface,
              scpi_units_def,
              SCPI_IDN1, SCPI_IDN2, SCPI_IDN3, SCPI_IDN4,

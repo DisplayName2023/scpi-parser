@@ -33,6 +33,7 @@ extern "C" {
 #endif
 
 #include "scpi/scpi.h"
+#include "awg.h"
 
 #define SCPI_INPUT_BUFFER_LENGTH 256
 #define SCPI_ERROR_QUEUE_SIZE 17
@@ -42,6 +43,7 @@ extern "C" {
 #define SCPI_IDN4 "01-02"
 
 extern const scpi_command_t scpi_commands[];
+extern const scpi_command_t scpi_AwgCommands[];
 extern scpi_interface_t scpi_interface;
 extern char scpi_input_buffer[];
 extern scpi_error_t scpi_error_queue_data[];
