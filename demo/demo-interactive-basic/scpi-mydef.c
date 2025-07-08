@@ -9,25 +9,25 @@ struct Awg awg;
 
 #define MAX_FILE_NAME_LENGTH 256
 
-scpi_result_t SCPI_SystemHelpHeaders(scpi_t *context) {
-    const char *command_list =
-        "AWG:VOLTage\n"
-        "AWG:Count\n"
-        "AWG:Duration\n"
-        "AWG:Enable\n"
-        "AWG:WAVEform\n"
-        "AWG:NAME\n"
-        "AWG:ARB:LOAD\n"
-        "AWG:FREQ:INST?/qonly\n"
-        "SYSTem:HELP:HEADers?/qonly\n"
-        "MMEMory:DATA\n"
-        "MMEMory:DATA:APPend/nquery/\n";
+// scpi_result_t SCPI_SystemHelpHeaders(scpi_t *context) {
+//     const char *command_list =
+//         "AWG:VOLTage\n"
+//         "AWG:Count\n"
+//         "AWG:Duration\n"
+//         "AWG:Enable\n"
+//         "AWG:WAVEform\n"
+//         "AWG:NAME\n"
+//         "AWG:ARB:LOAD\n"
+//         "AWG:FREQ:INST?/qonly\n"
+//         "SYSTem:HELP:HEADers?/qonly\n"
+//         "MMEMory:DATA\n"
+//         "MMEMory:DATA:APPend/nquery/\n";
 
-    // 返回命令列表，逐行显示
-    SCPI_ResultText(context, command_list);
+//     // 返回命令列表，逐行显示
+//     SCPI_ResultText(context, command_list);
 
-    return SCPI_RES_OK;
-}
+//     return SCPI_RES_OK;
+// }
 
 //Implementation of double type voltage query command
 scpi_result_t SCPI_MyDevVoltageQuery(scpi_t *context) {
@@ -298,54 +298,3 @@ scpi_result_t SCPI_MemoryDataQuery(scpi_t *context) {
 
     return SCPI_RES_OK;
 }
-
-// const scpi_command_t scpi_AwgCommands[] = {
-
-//     {.pattern="AWG:VOLTage?",.callback=SCPI_MyDevVoltageQuery},
-//     {.pattern="AWG:VOLTage",.callback=SCPI_MyDevVoltageSet},
-
-//     //int32 type, set and query sample count commands
-//     {.pattern="AWG:Count",.callback=SCPI_SampleCountSet},
-//     {.pattern="AWG:Count?",.callback=SCPI_SampleCountQuery},
-
-//     //Int64 type, set and query operation duration commands
-//     {.pattern="AWG:Duration",.callback=SCPI_DurationSet},
-//     {.pattern="AWG:Duration?",.callback=SCPI_DurationQuery},
-
-//     //Bool type, setting and query enable feature switch commands
-//     {.pattern="AWG:Enable",.callback=SCPI_EnableSet},
-//     {.pattern="AWG:Enable?",.callback=SCPI_EnableQuery},
-
-//     // Enum type, set and query waveform type commands
-//     {.pattern="AWG:WAVEform",.callback=SCPI_WaveFormSet},
-//     {.pattern="AWG:WAVEform?",.callback=SCPI_WaveFormQuery},
-
-//     // String type, set device name command
-//     {.pattern="AWG:NAME",.callback=SCPI_DevNameSet},
-//     {.pattern="AWG:NAME?",.callback=SCPI_DevNameQuery},
-
-//     //Arb type, load custom waveform command
-//     {.pattern="AWG:ARB:LOAD",.callback=SCPI_LoadArbitraryWaveform},
-
-//     //Commands with numeric suffixes, query the maximum, minimum and default values of frequency
-//     {.pattern="AWG:FREQ:INST?",.callback=SCPI_FrequencyInstQ},
-
-//     //Query system help information
-//     { .pattern = "SYSTem:HELP:HEADers?", .callback = SCPI_SystemHelpHeaders },
-
-//     //Storing waveform data
-//     { .pattern = "MMEMory:DATA", .callback = SCPI_MemoryDataSet },
-
-//     {.pattern="MMEMory:DATA?", .callback = SCPI_MemoryDataQuery },
-
-//     // Append data to memory
-//     { .pattern = "MMEMory:DATA:APPend", .callback = SCPI_MemoryDataAppend },
-
-//     // Multi-parameter command
-//     // { .pattern = "RUN", .callback = SCPI_RunCommand },
-
-//     // Action commands without parameters
-//     // { .pattern = "RUN", .callback = SCPI_RunAction },
-
-//     SCPI_CMD_LIST_END
-// };

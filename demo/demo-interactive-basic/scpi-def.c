@@ -42,6 +42,47 @@
 #include "scpi-def.h"
 #include "awg.h"
 
+ /* SCPI interface functions - these are referenced from the examples pattern but implemented per-demo */
+size_t SCPI_Write(scpi_t* context, const char* data, size_t len) {
+    (void)context;
+    return fwrite(data, 1, len, stdout);
+}
+
+scpi_result_t SCPI_Flush(scpi_t* context) {
+    (void)context;
+    return SCPI_RES_OK;
+}
+
+int SCPI_Error(scpi_t* context, int_fast16_t err) {
+    (void)context;
+    fprintf(stderr, "**ERROR: %d, \"%s\"\r\n", (int16_t)err, SCPI_ErrorTranslate(err));
+    return 0;
+}
+
+scpi_result_t SCPI_Control(scpi_t* context, scpi_ctrl_name_t ctrl, scpi_reg_val_t val) {
+    (void)context;
+    if (SCPI_CTRL_SRQ == ctrl) {
+        fprintf(stderr, "**SRQ: 0x%X (%d)\r\n", val, val);
+    }
+    else {
+        fprintf(stderr, "**CTRL %02x: 0x%X (%d)\r\n", ctrl, val, val);
+    }
+    return SCPI_RES_OK;
+}
+
+scpi_result_t SCPI_Reset(scpi_t* context) {
+    (void)context;
+    fprintf(stderr, "**Reset\r\n");
+    return SCPI_RES_OK;
+}
+
+scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t* context) {
+    (void)context;
+    return SCPI_RES_ERR;
+}
+
+
+// application commands
 
 static scpi_result_t DMM_MeasureVoltageDcQ(scpi_t * context) {
     scpi_number_t param1, param2;
@@ -196,6 +237,31 @@ struct _scpi_channel_value_t {
     int32_t col;
 };
 typedef struct _scpi_channel_value_t scpi_channel_value_t;
+
+
+scpi_result_t SCPI_SystemHelpHeaders(scpi_t *context) {
+    int count = 0;
+    size_t total_length = 0;
+
+    for (const scpi_command_t *cmd = scpi_commands; cmd->pattern != NULL; ++cmd) {
+        total_length += strlen(cmd->pattern) + 1; 
+        count++;
+    }
+
+    char *buffer = (char *)malloc(total_length + 1); 
+    if (!buffer) return SCPI_RES_ERR;
+
+    buffer[0] = '\0';
+    for (const scpi_command_t *cmd = scpi_commands; cmd->pattern != NULL; ++cmd) {
+        strcat(buffer, cmd->pattern);
+        strcat(buffer, "\n");
+    }
+
+    SCPI_ResultArbitraryBlock(context, buffer, strlen(buffer));
+
+    free(buffer);
+    return SCPI_RES_OK;
+}
 
 /**
  * @brief
@@ -411,11 +477,35 @@ const scpi_command_t scpi_commands[] = {
     {.pattern = "TEST:CHANnellist", .callback = TEST_Chanlst,},
 
     
-    //double type
-    SCPI_AWG_COMMANDS,
+    { .pattern="AWG:VOLTage?",.callback=SCPI_MyDevVoltageQuery }, 
+    { .pattern="AWG:VOLTage",.callback=SCPI_MyDevVoltageSet }, 
+    { .pattern="AWG:Count",.callback=SCPI_SampleCountSet }, 
+    { .pattern="AWG:Count?",.callback=SCPI_SampleCountQuery }, 
+    { .pattern="AWG:Duration",.callback=SCPI_DurationSet }, 
+    { .pattern="AWG:Duration?",.callback=SCPI_DurationQuery }, 
+    { .pattern="AWG:Enable",.callback=SCPI_EnableSet }, 
+    { .pattern="AWG:Enable?",.callback=SCPI_EnableQuery }, 
+    { .pattern="AWG:WAVEform",.callback=SCPI_WaveFormSet }, 
+    { .pattern="AWG:WAVEform?",.callback=SCPI_WaveFormQuery }, 
+    { .pattern="AWG:NAME",.callback=SCPI_DevNameSet }, 
+    { .pattern="AWG:NAME?",.callback=SCPI_DevNameQuery }, 
+    { .pattern="AWG:ARB:LOAD",.callback=SCPI_LoadArbitraryWaveform }, 
+    { .pattern="AWG:FREQ:INST?",.callback=SCPI_FrequencyInstQ }, 
+    { .pattern="SYSTem:HELP:HEADers?",.callback=SCPI_SystemHelpHeaders }, 
+    { .pattern="MMEMory:DATA",.callback=SCPI_MemoryDataSet }, 
+    { .pattern="MMEMory:DATA?",.callback=SCPI_MemoryDataQuery }, 
+    { .pattern="MMEMory:DATA:APPend",.callback=SCPI_MemoryDataAppend },
 
     SCPI_CMD_LIST_END
 };
+
+
+
+
+size_t get_scpi_commands_count() {
+	size_t count =  sizeof(scpi_commands) / sizeof(scpi_command_t) - 1;
+    return count;
+}
 
 scpi_interface_t scpi_interface = {
     .error = SCPI_Error,

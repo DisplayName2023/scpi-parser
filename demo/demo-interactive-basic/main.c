@@ -45,112 +45,13 @@
 #include <string.h>
 #include <scpi/scpi.h>
 #include "scpi-def.h"
-#include "awg.h"
 
 #define SCPI_INPUT_BUFFER_LENGTH 256
 #define SCPI_ERROR_QUEUE_SIZE 17
 
-/* SCPI interface functions - these are referenced from the examples pattern but implemented per-demo */
-size_t SCPI_Write(scpi_t * context, const char * data, size_t len) {
-    (void) context;
-    return fwrite(data, 1, len, stdout);
-}
 
-scpi_result_t SCPI_Flush(scpi_t * context) {
-    (void) context;
-    return SCPI_RES_OK;
-}
-
-int SCPI_Error(scpi_t * context, int_fast16_t err) {
-    (void) context;
-    fprintf(stderr, "**ERROR: %d, \"%s\"\r\n", (int16_t) err, SCPI_ErrorTranslate(err));
-    return 0;
-}
-
-scpi_result_t SCPI_Control(scpi_t * context, scpi_ctrl_name_t ctrl, scpi_reg_val_t val) {
-    (void) context;
-    if (SCPI_CTRL_SRQ == ctrl) {
-        fprintf(stderr, "**SRQ: 0x%X (%d)\r\n", val, val);
-    } else {
-        fprintf(stderr, "**CTRL %02x: 0x%X (%d)\r\n", ctrl, val, val);
-    }
-    return SCPI_RES_OK;
-}
-
-scpi_result_t SCPI_Reset(scpi_t * context) {
-    (void) context;
-    fprintf(stderr, "**Reset\r\n");
-    return SCPI_RES_OK;
-}
-
-scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t * context) {
-    (void) context;
-    return SCPI_RES_ERR;
-}
-
-/**
- * Note: This demo includes enhanced interactive features.
- * For a simpler implementation, see examples/test-interactive/main.c
- * which demonstrates the core functionality with minimal code.
- */
-
-/* Print help information */
-static void print_help() {
-    printf("\n=== SCPI Parser Interactive Demo ===\n\n");
-    printf("This demo simulates a measurement instrument with SCPI interface.\n");
-    printf("You can enter SCPI commands interactively.\n\n");
-    
-    printf("Example Commands:\n");
-    printf("  *IDN?                           - Get instrument identification\n");
-    printf("  *RST                            - Reset instrument\n");
-    printf("  *TST?                           - Self test\n");
-    printf("  SOUR:VOLT 5.0                  - Set voltage to 5.0V\n");
-    printf("  SOUR:VOLT?                      - Query voltage setting\n");
-    printf("  SOUR:CURR 0.1                  - Set current to 0.1A\n");
-    printf("  SOUR:CURR?                      - Query current setting\n");
-    printf("  SOUR:FREQ 1000                 - Set frequency to 1000Hz\n");
-    printf("  SOUR:FREQ?                      - Query frequency setting\n");
-    printf("  OUTP ON                         - Enable output\n");
-    printf("  OUTP?                           - Query output state\n");
-    printf("  MEAS:VOLT?                      - Measure voltage\n");
-    printf("  MEAS:CURR?                      - Measure current\n");
-    printf("  SYST:ERR?                       - Check for errors\n");
-    printf("  AWG:VOLTage?                    - Query voltage setting (custom command)\n");
-    printf("  AWG:VOLTage                     - Set voltage to 10.0V (custom command)\n");
-    printf("  AWG:Count                       - Set AWG sample count (custom command)\n");
-    printf("  AWG:Count?                      - Query AWG sample count (custom command)\n");
-    printf("  AWG:Duration                    - Set AWG duration (custom command)\n");
-    printf("  AWG:Duration?                    - Query AWG duration (custom command)\n");
-    printf("  AWG:Enable                      - Enable AWG (custom command)\n");
-    printf("  AWG:Enable?                      - Query AWG enable state (custom command)\n");
-    printf("  AWG:WAVEform                    - Set AWG waveform (custom command)\n");
-    printf("  AWG:WAVEform?                    - Query AWG waveform (custom command)\n");
-    printf("  AWG:NAME                        - Set AWG name (custom command)\n");
-    printf("  AWG:NAME?                        - Query AWG name (custom command)\n");
-    printf("  AWG:ARB:LOAD                     - Load waveform data (custom command)\n");
-    printf("  AWG:FREQ:INST?                  - Query AWG instantaneous frequency (custom command)\n");
-    printf("  RUN                             - Start AWG (custom command)\n");
-    printf("  help                            - Show this help\n");
-    printf("  quit                            - Exit demo\n\n");
-    printf("Note: Commands are case-insensitive and support SCPI abbreviations.\n");
-    printf("For example: 'SOUR:VOLT?' can be written as 'sour:volt?' or 'so:v?'\n\n");
-}
-
-/* Process command line arguments */
-static int process_arguments(int argc, char* argv[]) {
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
-            print_help();
-            return 1; // Exit after showing help
-        }
-        else if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
-            printf("SCPI Parser Interactive Demo v1.0.0\n");
-            printf("Built with SCPI Parser library\n");
-            return 1; // Exit after showing version
-        }
-    }
-    return 0; // Continue execution
-}
+static void print_help();
+static int process_arguments(int argc, char* argv[]);
 
 /* Main function */
 int main(int argc, char* argv[]) {
@@ -165,7 +66,6 @@ int main(int argc, char* argv[]) {
     /* Initialize SCPI context */
     SCPI_Init(&scpi_context,
              scpi_commands,
-             //scpi_AwgCommands,
              &scpi_interface,
              scpi_units_def,
              SCPI_IDN1, SCPI_IDN2, SCPI_IDN3, SCPI_IDN4,
@@ -173,7 +73,7 @@ int main(int argc, char* argv[]) {
              scpi_error_queue_data, SCPI_ERROR_QUEUE_SIZE);
     
     printf("=== SCPI Parser Interactive Demo ===\n");
-    printf("Type 'help' for available commands, 'quit' to exit.\n\n");
+    printf("Type 'syst:help:head?' for available commands, 'quit' to exit.\n\n");
     
     /* Main command loop */
     while (1) {
@@ -226,3 +126,70 @@ int main(int argc, char* argv[]) {
     
     return 0;
 } 
+
+
+
+
+/**
+ * Note: This demo includes enhanced interactive features.
+ * For a simpler implementation, see examples/test-interactive/main.c
+ * which demonstrates the core functionality with minimal code.
+ */
+
+ /* Print help information */
+static void print_help() {
+    printf("\n=== SCPI Parser Interactive Demo ===\n\n");
+    printf("This demo simulates a measurement instrument with SCPI interface.\n");
+    printf("You can enter SCPI commands interactively.\n\n");
+
+    printf("Example Commands:\n");
+    printf("  *IDN?                           - Get instrument identification\n");
+    printf("  *RST                            - Reset instrument\n");
+    printf("  *TST?                           - Self test\n");
+    printf("  SOUR:VOLT 5.0                  - Set voltage to 5.0V\n");
+    printf("  SOUR:VOLT?                      - Query voltage setting\n");
+    printf("  SOUR:CURR 0.1                  - Set current to 0.1A\n");
+    printf("  SOUR:CURR?                      - Query current setting\n");
+    printf("  SOUR:FREQ 1000                 - Set frequency to 1000Hz\n");
+    printf("  SOUR:FREQ?                      - Query frequency setting\n");
+    printf("  OUTP ON                         - Enable output\n");
+    printf("  OUTP?                           - Query output state\n");
+    printf("  MEAS:VOLT?                      - Measure voltage\n");
+    printf("  MEAS:CURR?                      - Measure current\n");
+    printf("  SYST:ERR?                       - Check for errors\n");
+    printf("  AWG:VOLTage?                    - Query voltage setting (custom command)\n");
+    printf("  AWG:VOLTage                     - Set voltage to 10.0V (custom command)\n");
+    printf("  AWG:Count                       - Set AWG sample count (custom command)\n");
+    printf("  AWG:Count?                      - Query AWG sample count (custom command)\n");
+    printf("  AWG:Duration                    - Set AWG duration (custom command)\n");
+    printf("  AWG:Duration?                    - Query AWG duration (custom command)\n");
+    printf("  AWG:Enable                      - Enable AWG (custom command)\n");
+    printf("  AWG:Enable?                      - Query AWG enable state (custom command)\n");
+    printf("  AWG:WAVEform                    - Set AWG waveform (custom command)\n");
+    printf("  AWG:WAVEform?                    - Query AWG waveform (custom command)\n");
+    printf("  AWG:NAME                        - Set AWG name (custom command)\n");
+    printf("  AWG:NAME?                        - Query AWG name (custom command)\n");
+    printf("  AWG:ARB:LOAD                     - Load waveform data (custom command)\n");
+    printf("  AWG:FREQ:INST?                  - Query AWG instantaneous frequency (custom command)\n");
+    printf("  RUN                             - Start AWG (custom command)\n");
+    printf("  help                            - Show this help\n");
+    printf("  quit                            - Exit demo\n\n");
+    printf("Note: Commands are case-insensitive and support SCPI abbreviations.\n");
+    printf("For example: 'SOUR:VOLT?' can be written as 'sour:volt?' or 'so:v?'\n\n");
+}
+
+/* Process command line arguments */
+static int process_arguments(int argc, char* argv[]) {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
+            print_help();
+            return 1; // Exit after showing help
+        }
+        else if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
+            printf("SCPI Parser Interactive Demo v1.0.0\n");
+            printf("Built with SCPI Parser library\n");
+            return 1; // Exit after showing version
+        }
+    }
+    return 0; // Continue execution
+}
