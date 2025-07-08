@@ -34,6 +34,7 @@ extern "C" {
 
 #include "scpi/scpi.h"
 
+
 #define SCPI_INPUT_BUFFER_LENGTH 256
 #define SCPI_ERROR_QUEUE_SIZE 17
 #define SCPI_IDN1 "MANUFACTURE"
@@ -56,10 +57,51 @@ scpi_result_t SCPI_Reset(scpi_t * context);
 scpi_result_t SCPI_Flush(scpi_t * context);
 
 
+
+
 scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t * context);
+
+
+scpi_result_t SCPI_SystemHelpHeaders(scpi_t* context);
+
+
+
+
+scpi_result_t SCPI_MyDevVoltageQuery(scpi_t* context);
+scpi_result_t SCPI_MyDevVoltageSet(scpi_t* context);
+
+scpi_result_t SCPI_SampleCountQuery(scpi_t* context);
+scpi_result_t SCPI_SampleCountSet(scpi_t* context);
+
+scpi_result_t SCPI_DurationSet(scpi_t* context);
+scpi_result_t SCPI_DurationQuery(scpi_t* context);
+
+scpi_result_t SCPI_EnableSet(scpi_t* context);
+scpi_result_t SCPI_EnableQuery(scpi_t* context);
+
+scpi_result_t SCPI_WaveFormSet(scpi_t* context);
+scpi_result_t SCPI_WaveFormQuery(scpi_t* context);
+
+scpi_result_t SCPI_DevNameSet(scpi_t* context);
+scpi_result_t SCPI_DevNameQuery(scpi_t* context);
+
+scpi_result_t SCPI_LoadArbitraryWaveform(scpi_t* context);
+
+scpi_result_t SCPI_FrequencyInstQ(scpi_t* context);
+
+scpi_result_t SCPI_MemoryDataAppend(scpi_t* context);
+scpi_result_t SCPI_MemoryDataSet(scpi_t* context);
+scpi_result_t SCPI_MemoryDataQuery(scpi_t* context);
+
+
+// scpi_result_t SCPI_RunCommand(scpi_t *context);
+// scpi_result_t SCPI_RunAction(scpi_t *context);
+
+
+
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* __SCPI_DEF_H_ */
+#endif
 

@@ -7,6 +7,8 @@ add_executable(${PROJECT_NAME}
     main.c
     scpi-def.h
     scpi-def.c
+    scpi-mydef.c
+    awg.h
 )
 
 # Link against the SCPI Parser package from Conan
