@@ -40,16 +40,16 @@ struct Awg
     int32_t sample_count;
     int64_t operation_duration;
     scpi_bool_t feature_enabled;
-    char device_name;
-    double frequency_max;
-    double frequency_min;
-    double frequency_default;
+    char device_name[100];
     double amplitude;
     double offset;
     double phase;
     double waveform;
     waveform_type_t waveform_type;
     double waveform_frequency;
+    double frequency_max;    
+    double frequency_min;           
+    double frequency_default;
 
     struct Channel channel[8];
     int channel_count;

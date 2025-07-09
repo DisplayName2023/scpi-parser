@@ -5,29 +5,9 @@
 #include "scpi-def.h"
 #include "awg.h"
 
-struct Awg awg;
+struct Awg awg = {0};
 
 #define MAX_FILE_NAME_LENGTH 256
-
-// scpi_result_t SCPI_SystemHelpHeaders(scpi_t *context) {
-//     const char *command_list =
-//         "AWG:VOLTage\n"
-//         "AWG:Count\n"
-//         "AWG:Duration\n"
-//         "AWG:Enable\n"
-//         "AWG:WAVEform\n"
-//         "AWG:NAME\n"
-//         "AWG:ARB:LOAD\n"
-//         "AWG:FREQ:INST?/qonly\n"
-//         "SYSTem:HELP:HEADers?/qonly\n"
-//         "MMEMory:DATA\n"
-//         "MMEMory:DATA:APPend/nquery/\n";
-
-//     // 返回命令列表，逐行显示
-//     SCPI_ResultText(context, command_list);
-
-//     return SCPI_RES_OK;
-// }
 
 //Implementation of double type voltage query command
 scpi_result_t SCPI_MyDevVoltageQuery(scpi_t *context) {
@@ -117,7 +97,7 @@ scpi_result_t SCPI_WaveFormSet(scpi_t *context) {
     }
     awg.waveform_type = (waveform_type_t)param;  // Set waveform type
     return SCPI_RES_OK;
-}
+}   
 //Implementation of Query Waveform Type Command
 scpi_result_t SCPI_WaveFormQuery(scpi_t *context) {
     SCPI_ResultInt32(context, awg.waveform_type);
@@ -137,10 +117,12 @@ scpi_result_t SCPI_DevNameSet(scpi_t *context) {
 
 //Implementation of Query Device Name Command
 scpi_result_t SCPI_DevNameQuery(scpi_t *context) {
-    // Here the name of the current device can be returned, for example from a variable set earlier.
     const char *device_name = "My Device"; // Suppose this is the current device name
-
-    SCPI_ResultText(context, awg.device_name);
+   if (awg.device_name[0] == '\0') {
+        SCPI_Write(context,awg.device_name, strlen(awg.device_name));
+    } else {
+        SCPI_Write(context, awg.device_name, strlen(awg.device_name));
+    }
     return SCPI_RES_OK;
 }
 
@@ -160,25 +142,35 @@ scpi_result_t  SCPI_LoadArbitraryWaveform(scpi_t *context){
 
 //Maximum, minimum, and default values for query frequency
 scpi_result_t SCPI_FrequencyInstQ(scpi_t *context) {
-    const char *query_type;
+    awg.frequency_max = 10000000.0;
+    awg.frequency_min = 1000.0;
+    awg.frequency_default = 1000000.0;
+    char query_type[16];
+    int32_t choice_val = 0;
     size_t length;
 
-    if (!SCPI_ParamCopyText(context, query_type,sizeof(query_type),&length, TRUE)) {
+     static const scpi_choice_def_t freq_choices[] = {
+        {"MAX", 1},
+        {"MIN", 2},
+        {"DEF", 3},
+        {NULL, 0}
+    };
+
+     if (!SCPI_ParamChoice(context, freq_choices, &choice_val, TRUE)) {
         return SCPI_RES_ERR;
     }
 
-    if (strcmp(query_type, "MAX") == 0) {
-        SCPI_ResultDouble(context, awg.frequency_max);  //Return the maximum frequency
-    } else if (strcmp(query_type, "MIN") == 0) {
-        SCPI_ResultDouble(context, awg.frequency_min);  // Return minimum frequency
-    } else if (strcmp(query_type, "DEF") == 0) {
-        SCPI_ResultDouble(context, awg.frequency_default);  // Return to default frequency
+    if (choice_val == 1) {
+        SCPI_ResultDouble(context, awg.frequency_max);
+    } else if (choice_val == 2) {
+        SCPI_ResultDouble(context, awg.frequency_min);
+    } else if (choice_val == 3) {
+        SCPI_ResultDouble(context, awg.frequency_default);
     } else {
         return SCPI_RES_ERR;
-
+    }
 
     return SCPI_RES_OK;
-}
 }
 
 scpi_result_t SCPI_MemoryDataAppend(scpi_t *context){
@@ -226,9 +218,9 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t *context){
 // }
 
 
-// //无参数的 Action 命令
+// //Action commands without parameters
 // static scpi_result_t SCPI_RunAction(scpi_t *context) {
-//     run();  // 执行实际动作
+//     run();  
 //     return SCPI_RES_OK;
 // }
 
