@@ -81,6 +81,77 @@ static int socket_set_nonblocking(int socket);
 static int socket_get_error(void);
 static const char* socket_error_string(int error_code);
 
+
+
+ /* SCPI interface functions - these are referenced from the examples pattern but implemented per-demo */
+size_t SCPI_Write(scpi_t* context, const char* data, size_t len) {
+    if (context->user_context != NULL) {
+        int fd = *(int*)(context->user_context);
+
+#ifndef _WIN32
+        // Unix-specific TCP_CORK optimization
+        int state = 1;
+        setsockopt(fd, IPPROTO_TCP, TCP_CORK, &state, sizeof(state));
+#endif
+
+        // Cross-platform socket send
+#ifdef _WIN32
+        return send(fd, data, (int)len, 0);
+#else
+        return write(fd, data, len);
+#endif
+    }
+    return 0;
+}
+
+scpi_result_t SCPI_Flush(scpi_t* context) {
+    if (context->user_context != NULL) {
+        int fd = *(int*)(context->user_context);
+
+#ifndef _WIN32
+        // Unix-specific TCP_CORK disable to flush
+        int state = 0;
+        setsockopt(fd, IPPROTO_TCP, TCP_CORK, &state, sizeof(state));
+#endif
+    }
+
+    return SCPI_RES_OK;
+}
+
+int SCPI_Error(scpi_t* context, int_fast16_t err) {
+    (void)context;
+    fprintf(stderr, "**ERROR: %d, \"%s\" [%s]\r\n",
+        (int16_t)err, SCPI_ErrorTranslate(err), PLATFORM_NAME);
+    return 0;
+}
+
+scpi_result_t SCPI_Control(scpi_t* context, scpi_ctrl_name_t ctrl, scpi_reg_val_t val) {
+    (void)context;
+
+    if (SCPI_CTRL_SRQ == ctrl) {
+        fprintf(stderr, "**SRQ: 0x%X (%d) [%s]\r\n", val, val, PLATFORM_NAME);
+    }
+    else {
+        fprintf(stderr, "**CTRL %02x: 0x%X (%d) [%s]\r\n", ctrl, val, val, PLATFORM_NAME);
+    }
+    return SCPI_RES_OK;
+}
+
+
+scpi_result_t SCPI_Reset(scpi_t* context) {
+    (void)context;
+    fprintf(stderr, "**Reset [%s]\r\n", PLATFORM_NAME);
+    return SCPI_RES_OK;
+}
+
+
+scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t* context) {
+    (void)context;
+    return SCPI_RES_ERR;
+}
+
+
+
 /**
  * Initialize socket subsystem (Windows requires this)
  */

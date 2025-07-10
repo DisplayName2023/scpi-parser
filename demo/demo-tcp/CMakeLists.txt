@@ -16,10 +16,7 @@ endif()
 # Create the TCP demo executable  
 add_executable(demo-tcp-scpi 
     main.c
-    scpi-def.h
-    scpi-def.c
-    awg.h
-    scpi-mydef.c
+    ../common/scpi-def.h
 )
 
 # Link against the SCPI Parser package from Conan

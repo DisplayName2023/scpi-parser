@@ -30,7 +30,7 @@ endif()
 add_subdirectory(common)
 add_subdirectory(demo-interactive)
 add_subdirectory(demo-tcp)
-add_subdirectory(demo-interactive-basic)
+add_subdirectory(standalone)
 
 # Enable testing
 enable_testing()

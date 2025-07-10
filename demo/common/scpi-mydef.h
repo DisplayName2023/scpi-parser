@@ -26,8 +26,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __SCPI_DEF_H_
-#define __SCPI_DEF_H_
+#ifndef __SCPI_MYDEF_H_
+#define __SCPI_MYDEF_H_
 #ifdef __cplusplus
 extern "C" {
 #endif

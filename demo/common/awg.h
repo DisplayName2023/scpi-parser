@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-//#include <scpi/scpi.h>
-
 
 
 typedef enum waveform_type_t
@@ -39,7 +37,7 @@ struct Awg
     double sample_rate;
     int32_t sample_count;
     int64_t operation_duration;
-    scpi_bool_t feature_enabled;
+    uint8_t feature_enabled;
     char device_name[100];
     double amplitude;
     double offset;

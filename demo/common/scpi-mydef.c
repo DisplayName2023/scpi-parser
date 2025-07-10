@@ -232,7 +232,6 @@ scpi_result_t SCPI_MemoryDataSet(scpi_t *context) {
     if(!SCPI_ParamCopyText(context, file_name, sizeof(file_name), &length, TRUE)) {
         return SCPI_RES_ERR;
     }
-
     if(!SCPI_ParamArbitraryBlock(context, &data, &length, TRUE)) {
         
         return SCPI_RES_ERR;
@@ -288,5 +287,31 @@ scpi_result_t SCPI_MemoryDataQuery(scpi_t *context) {
 
     free(buffer);
 
+    return SCPI_RES_OK;
+}
+
+
+
+scpi_result_t SCPI_SystemHelpHeaders(scpi_t *context) {
+    int count = 0;
+    size_t total_length = 0;
+
+    for (const scpi_command_t *cmd = scpi_commands; cmd->pattern != NULL; ++cmd) {
+        total_length += strlen(cmd->pattern) + 1; 
+        count++;
+    }
+
+    char *buffer = (char *)malloc(total_length + 1); 
+    if (!buffer) return SCPI_RES_ERR;
+
+    buffer[0] = '\0';
+    for (const scpi_command_t *cmd = scpi_commands; cmd->pattern != NULL; ++cmd) {
+        strcat(buffer, cmd->pattern);
+        strcat(buffer, "\n");
+    }
+
+    SCPI_ResultArbitraryBlock(context, buffer, strlen(buffer));
+
+    free(buffer);
     return SCPI_RES_OK;
 }

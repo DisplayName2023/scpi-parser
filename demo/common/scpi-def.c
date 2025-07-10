@@ -40,6 +40,7 @@
 #include <string.h>
 #include "scpi/scpi.h"
 #include "scpi-def.h"
+#include "scpi-mydef.h"
 
 static scpi_result_t DMM_MeasureVoltageDcQ(scpi_t * context) {
     scpi_number_t param1, param2;
@@ -407,6 +408,25 @@ const scpi_command_t scpi_commands[] = {
     {.pattern = "TEST:TEXT", .callback = TEST_Text,},
     {.pattern = "TEST:ARBitrary?", .callback = TEST_ArbQ,},
     {.pattern = "TEST:CHANnellist", .callback = TEST_Chanlst,},
+
+    { .pattern="AWG:VOLTage?",.callback=SCPI_MyDevVoltageQuery }, 
+    { .pattern="AWG:VOLTage",.callback=SCPI_MyDevVoltageSet }, 
+    { .pattern="AWG:Count",.callback=SCPI_SampleCountSet }, 
+    { .pattern="AWG:Count?",.callback=SCPI_SampleCountQuery }, 
+    { .pattern="AWG:Duration",.callback=SCPI_DurationSet }, 
+    { .pattern="AWG:Duration?",.callback=SCPI_DurationQuery }, 
+    { .pattern="AWG:Enable",.callback=SCPI_EnableSet }, 
+    { .pattern="AWG:Enable?",.callback=SCPI_EnableQuery }, 
+    { .pattern="AWG:WAVEform",.callback=SCPI_WaveFormSet }, 
+    { .pattern="AWG:WAVEform?",.callback=SCPI_WaveFormQuery }, 
+    { .pattern="AWG:NAME",.callback=SCPI_DevNameSet }, 
+    { .pattern="AWG:NAME?",.callback=SCPI_DevNameQuery }, 
+    { .pattern="AWG:ARB:LOAD",.callback=SCPI_LoadArbitraryWaveform }, 
+    { .pattern="AWG:FREQ:INST?",.callback=SCPI_FrequencyInstQ }, 
+    { .pattern="SYSTem:HELP:HEADers?",.callback=SCPI_SystemHelpHeaders }, 
+    { .pattern="MMEMory:DATA",.callback=SCPI_MemoryDataSet }, 
+    { .pattern="MMEMory:DATA?",.callback=SCPI_MemoryDataQuery }, 
+    { .pattern="MMEMory:DATA:APPend",.callback=SCPI_MemoryDataAppend },
 
     SCPI_CMD_LIST_END
 };

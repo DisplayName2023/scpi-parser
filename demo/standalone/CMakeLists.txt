@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(demo-interactive-basic LANGUAGES C)
+project(standalone LANGUAGES C)
 
 # Create the interactive demo executable
 add_executable(${PROJECT_NAME} 

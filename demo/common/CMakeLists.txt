@@ -2,7 +2,14 @@ cmake_minimum_required(VERSION 3.28)
 
 project(scpi-common-example LANGUAGES C)
 
-add_library(scpi-common-example STATIC scpi-def.c)
+add_library(scpi-common-example STATIC 
+    awg.h
+    scpi-def.h
+    scpi-def.c
+    scpi-mydef.h
+    scpi-mydef.c
+    
+)
 
 target_include_directories(scpi-common-example PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}
