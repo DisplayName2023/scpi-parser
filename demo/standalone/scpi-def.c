@@ -40,6 +40,7 @@
 #include <string.h>
 #include "scpi/scpi.h"
 #include "scpi-def.h"
+
 #include "awg.h"
 
  /* SCPI interface functions - these are referenced from the examples pattern but implemented per-demo */
@@ -498,8 +499,6 @@ const scpi_command_t scpi_commands[] = {
 
     SCPI_CMD_LIST_END
 };
-
-
 
 
 size_t get_scpi_commands_count() {

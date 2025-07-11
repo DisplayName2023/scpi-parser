@@ -5,9 +5,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-
-
-
 typedef enum waveform_type_t
 {
     WAVEFORM_TYPE_SINE,
@@ -54,8 +51,6 @@ struct Awg
     struct Channel channel[8];
     int channel_count;
 };
-
-
 
 
 

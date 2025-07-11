@@ -6,7 +6,6 @@ add_library(scpi-common-example STATIC
     awg.h
     scpi-def.h
     scpi-def.c
-    scpi-mydef.h
     scpi-mydef.c
     
 )

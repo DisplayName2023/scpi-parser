@@ -44,6 +44,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <scpi/scpi.h>
+
 #include "../common/scpi-def.h"
 
 #define SCPI_INPUT_BUFFER_LENGTH 256

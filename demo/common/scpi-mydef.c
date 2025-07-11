@@ -186,7 +186,7 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t *context){
         return SCPI_RES_ERR; 
     }
 
-    FILE *file = fopen(file_name, "a");
+    FILE *file = fopen(file_name, "ab");
     if (file == NULL) {
         return SCPI_RES_ERR;
     }
@@ -196,7 +196,6 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t *context){
     fclose(file);
     return SCPI_RES_OK;
 }
-
 
 // // //多参数命令
 // static scpi_result_t SCPI_RunCommand(scpi_t *context) {
@@ -268,7 +267,7 @@ scpi_result_t SCPI_MemoryDataQuery(scpi_t *context) {
     long file_size = ftell(file); 
     fseek(file, 0, SEEK_SET); 
 
-    if (file_size <= 0) {
+    if (file_size < 0) {
         fclose(file);
         return SCPI_RES_ERR;  
     }

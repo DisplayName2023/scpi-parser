@@ -186,7 +186,7 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t *context){
         return SCPI_RES_ERR; 
     }
 
-    FILE *file = fopen(file_name, "a");
+    FILE *file = fopen(file_name, "ab");
     if (file == NULL) {
         return SCPI_RES_ERR;
     }
@@ -197,44 +197,17 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t *context){
     return SCPI_RES_OK;
 }
 
-
-// // //多参数命令
-// static scpi_result_t SCPI_RunCommand(scpi_t *context) {
-//     int32_t mode;
-//     const char *trigger_source;
-
-//     if (!SCPI_ParamInt32(context, &mode, TRUE)) {
-//         return SCPI_RES_ERR;
-//     }
-
-//     if (!SCPI_ParamText(context, &trigger_source, FALSE)) {
-//         return SCPI_RES_ERR;
-//     }
-
-//     // 执行命令
-//     run(mode, trigger_source);  // 假设 run() 是实际执行的函数
-
-//     return SCPI_RES_OK;
-// }
-
-
-// //Action commands without parameters
-// static scpi_result_t SCPI_RunAction(scpi_t *context) {
-//     run();  
-//     return SCPI_RES_OK;
-// }
-
 scpi_result_t SCPI_MemoryDataSet(scpi_t *context) {
     char file_name[MAX_FILE_NAME_LENGTH] = {0};
     const char *data;
     size_t length;
 
     if(!SCPI_ParamCopyText(context, file_name, sizeof(file_name), &length, TRUE)) {
+
         return SCPI_RES_ERR;
     }
 
     if(!SCPI_ParamArbitraryBlock(context, &data, &length, TRUE)) {
-        
         return SCPI_RES_ERR;
     }
 
@@ -249,6 +222,7 @@ scpi_result_t SCPI_MemoryDataSet(scpi_t *context) {
     }
 
     return SCPI_RES_OK;
+
 }
 
 scpi_result_t SCPI_MemoryDataQuery(scpi_t *context) {
