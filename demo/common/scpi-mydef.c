@@ -261,6 +261,7 @@ scpi_result_t SCPI_MemoryDataQuery(scpi_t *context) {
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
         return SCPI_RES_ERR;  
+        
     }
 
     fseek(file, 0, SEEK_END); 

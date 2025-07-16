@@ -497,6 +497,9 @@ const scpi_command_t scpi_commands[] = {
     { .pattern="MMEMory:DATA?",.callback=SCPI_MemoryDataQuery }, 
     { .pattern="MMEMory:DATA:APPend",.callback=SCPI_MemoryDataAppend },
 
+    { .pattern = "SET:VOLTAGE:FREQ:TIME", .callback = SCPI_SetVoltageFrequencyTime },
+
+
     SCPI_CMD_LIST_END
 };
 

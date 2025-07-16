@@ -264,3 +264,31 @@ scpi_result_t SCPI_MemoryDataQuery(scpi_t *context) {
 
     return SCPI_RES_OK;
 }
+
+scpi_result_t SCPI_SetVoltageFrequencyTime(scpi_t *context) {
+    double voltage, frequency;
+    int64_t duration;
+
+    if (!SCPI_ParamDouble(context, &voltage, TRUE)) {
+        return SCPI_RES_ERR; 
+    }
+
+    if (!SCPI_ParamDouble(context, &frequency, TRUE)) {
+        return SCPI_RES_ERR;  
+    }
+
+    if (!SCPI_ParamInt64(context, &duration, TRUE)) {
+        return SCPI_RES_ERR;
+    }
+
+    awg.amplitude = voltage;
+    awg.waveform_frequency = frequency;
+    awg.operation_duration = duration;
+
+
+    fprintf(stderr, "voltage: %f V\n", voltage);
+    fprintf(stderr, "frequency: %f Hz\n", frequency);
+    fprintf(stderr, "duration: %d 秒\n", duration);
+
+    return SCPI_RES_OK;
+}

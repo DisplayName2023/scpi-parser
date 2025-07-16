@@ -93,9 +93,7 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t* context);
 scpi_result_t SCPI_MemoryDataSet(scpi_t* context);
 scpi_result_t SCPI_MemoryDataQuery(scpi_t* context);
 
-
-// scpi_result_t SCPI_RunCommand(scpi_t *context);
-// scpi_result_t SCPI_RunAction(scpi_t *context);
+scpi_result_t SCPI_SetVoltageFrequencyTime(scpi_t* context);
 
 
 
