@@ -93,6 +93,26 @@ scpi_result_t SCPI_MemoryDataAppend(scpi_t* context);
 scpi_result_t SCPI_MemoryDataSet(scpi_t* context);
 scpi_result_t SCPI_MemoryDataQuery(scpi_t* context);
 
+// Extended parameter handling functions with units
+scpi_result_t SCPI_FrequencySetAdvanced(scpi_t* context);
+scpi_result_t SCPI_FrequencyQueryAdvanced(scpi_t* context);
+scpi_result_t SCPI_VoltageSetExtended(scpi_t* context);
+
+// Manual unit handling examples
+scpi_result_t SCPI_ManualUnitHandling(scpi_t* context);
+scpi_result_t SCPI_AdvancedManualUnitHandling(scpi_t* context);
+
+// scpi_number_t (_scpi_number_parameter_t) demonstration functions
+scpi_result_t SCPI_NumberStructureDemo(scpi_t* context);
+scpi_result_t SCPI_NumberStructureOutput(scpi_t* context);
+scpi_result_t SCPI_NumberStructureAdvanced(scpi_t* context);
+scpi_result_t SCPI_NumberStructureConstruct(scpi_t* context);
+
+// SCPI_ParamTranslateNumberVal demonstration (missing function)
+scpi_bool_t My_SCPI_ParamTranslateNumberVal(scpi_t* context, scpi_parameter_t* parameter);
+scpi_result_t SCPI_ParamTranslateDemo(scpi_t* context);
+scpi_result_t SCPI_ParamTranslateAlternative(scpi_t* context);
+scpi_result_t SCPI_ParamTranslateBestPractice(scpi_t* context);
 
 // scpi_result_t SCPI_RunCommand(scpi_t *context);
 // scpi_result_t SCPI_RunAction(scpi_t *context);

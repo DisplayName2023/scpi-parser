@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "scpi/scpi.h"
+#include "scpi/units.h"
 #include "scpi-def.h"
 #include "awg.h"
 
@@ -495,6 +496,26 @@ const scpi_command_t scpi_commands[] = {
     { .pattern="MMEMory:DATA",.callback=SCPI_MemoryDataSet }, 
     { .pattern="MMEMory:DATA?",.callback=SCPI_MemoryDataQuery }, 
     { .pattern="MMEMory:DATA:APPend",.callback=SCPI_MemoryDataAppend },
+
+    // Extended parameter handling commands with units
+    { .pattern="AWG:FREQuency:ADVanced", .callback=SCPI_FrequencySetAdvanced},
+    { .pattern="AWG:FREQuency:ADVanced?", .callback=SCPI_FrequencyQueryAdvanced},
+    { .pattern="AWG:VOLTage:EXTended", .callback=SCPI_VoltageSetExtended },
+
+    // Manual unit handling examples (educational)
+    { .pattern="AWG:UNIT:MANual", .callback=SCPI_ManualUnitHandling },
+    { .pattern="AWG:UNIT:ADVanced", .callback=SCPI_AdvancedManualUnitHandling },
+
+    // scpi_number_t structure demonstration commands
+    { .pattern="AWG:NUMber:DEMO", .callback=SCPI_NumberStructureDemo },
+    { .pattern="AWG:NUMber:OUTPut", .callback=SCPI_NumberStructureOutput },
+    { .pattern="AWG:NUMber:ADVanced", .callback=SCPI_NumberStructureAdvanced },
+    { .pattern="AWG:NUMber:CONStruct", .callback=SCPI_NumberStructureConstruct },
+
+    // SCPI_ParamTranslateNumberVal demonstration commands (missing function)
+    { .pattern="AWG:TRANslate:DEMO", .callback=SCPI_ParamTranslateDemo },
+    { .pattern="AWG:TRANslate:ALTernative", .callback=SCPI_ParamTranslateAlternative },
+    { .pattern="AWG:TRANslate:BESt", .callback=SCPI_ParamTranslateBestPractice },
 
     SCPI_CMD_LIST_END
 };

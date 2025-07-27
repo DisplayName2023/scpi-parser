@@ -47,6 +47,7 @@ struct Awg
     double waveform;
     waveform_type_t waveform_type;
     double waveform_frequency;
+    double frequency;            // Current frequency setting
     double frequency_max;    
     double frequency_min;           
     double frequency_default;
