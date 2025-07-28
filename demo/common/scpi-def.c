@@ -338,6 +338,62 @@ static scpi_result_t TEST_Chanlst(scpi_t *context) {
     return SCPI_RES_OK;
 }
 
+
+double double_value = 3.3;
+
+static scpi_result_t TEST_Double(scpi_t* context) {
+    scpi_number_t param1;
+    fprintf(stderr, "TEST:DOUBle\r\n"); /* debug command name */
+
+    /* read first parameter if present */
+    if (!SCPI_ParamNumber(context, get_scpi_special_numbers_def(), & param1, TRUE)) {
+        return SCPI_RES_ERR;
+    }
+
+    fprintf(stderr, "\tP1=%f\r\n", param1.content.value);
+    double_value = param1.content.value;
+
+    return SCPI_RES_OK;
+}
+
+
+
+static scpi_result_t TEST_DoubleQ(scpi_t* context) {
+    scpi_parameter_t scpi_param;
+    scpi_number_t param1;
+    fprintf(stderr, "TEST:DOUBle?\r\n"); /* debug command name */
+
+    // SCPI_Parameter(context, &scpi_param, FALSE)
+
+    // SCPI_ParamIsValid(&scpi_param)
+
+    /* read first parameter if present */
+    if (SCPI_ParamNumber(context, get_scpi_special_numbers_def(), &param1, FALSE)) {
+
+        if (param1.content.tag == SCPI_NUM_MAX)
+        {
+            SCPI_ResultDouble(context, 123456);
+            return SCPI_RES_OK;
+        }
+        else if (param1.content.tag == SCPI_NUM_MIN)
+        {
+            SCPI_ResultDouble(context, 0);
+            return SCPI_RES_OK;
+        }
+
+        return SCPI_RES_ERR;
+    }
+
+
+
+
+    SCPI_ResultDouble(context, double_value);
+
+    return SCPI_RES_OK;
+}
+
+
+
 /**
  * Reimplement IEEE488.2 *TST?
  *
@@ -407,6 +463,9 @@ const scpi_command_t scpi_commands[] = {
     {.pattern = "TEST:TEXT", .callback = TEST_Text,},
     {.pattern = "TEST:ARBitrary?", .callback = TEST_ArbQ,},
     {.pattern = "TEST:CHANnellist", .callback = TEST_Chanlst,},
+
+    {.pattern = "TEST:DOUBle", .callback = TEST_Double,},
+    {.pattern = "TEST:DOUBle?", .callback = TEST_DoubleQ,},
 
     SCPI_CMD_LIST_END
 };
