@@ -149,6 +149,8 @@ scpi_result_t SCPI_FrequencyQueryAdvanced(scpi_t *context) {
     return SCPI_RES_OK;
 }
 
+
+
 // Extended parameter handling for voltage with multiple parameter validation
 scpi_result_t SCPI_VoltageSetExtended(scpi_t *context) {
     scpi_number_t voltage_param;

@@ -41,27 +41,49 @@
 #include "scpi/scpi.h"
 #include "scpi-def.h"
 
+
+static scpi_result_t DMM_MeasureVoltageDc(scpi_t* context) {
+    scpi_number_t param1, param2;
+    char bf[15];
+    fprintf(stderr, "meas:volt:dc\r\n"); /* debug command name */
+
+    /* read first parameter if present */
+    if (!SCPI_ParamNumber(context, get_scpi_special_numbers_def(), &param1, FALSE)) {
+        /* do something, if parameter not present */
+    }
+
+
+    SCPI_NumberToStr(context, get_scpi_special_numbers_def(), &param1, bf, 15);
+    fprintf(stderr, "\tP1=%s\r\n", bf);
+
+
+
+    // SCPI_ResultDouble(context, 0);
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t DMM_MeasureVoltageDcQ(scpi_t * context) {
     scpi_number_t param1, param2;
     char bf[15];
     fprintf(stderr, "meas:volt:dc\r\n"); /* debug command name */
 
     /* read first parameter if present */
-    if (!SCPI_ParamNumber(context, scpi_special_numbers_def, &param1, FALSE)) {
+    if (!SCPI_ParamNumber(context, get_scpi_special_numbers_def(), &param1, FALSE)) {
         /* do something, if parameter not present */
     }
 
     /* read second paraeter if present */
-    if (!SCPI_ParamNumber(context, scpi_special_numbers_def, &param2, FALSE)) {
+    if (!SCPI_ParamNumber(context, get_scpi_special_numbers_def(), &param2, FALSE)) {
         /* do something, if parameter not present */
     }
 
 
-    SCPI_NumberToStr(context, scpi_special_numbers_def, &param1, bf, 15);
+    SCPI_NumberToStr(context, get_scpi_special_numbers_def(), &param1, bf, 15);
     fprintf(stderr, "\tP1=%s\r\n", bf);
 
 
-    SCPI_NumberToStr(context, scpi_special_numbers_def, &param2, bf, 15);
+    SCPI_NumberToStr(context, get_scpi_special_numbers_def(), &param2, bf, 15);
     fprintf(stderr, "\tP2=%s\r\n", bf);
 
     SCPI_ResultDouble(context, 0);
@@ -75,21 +97,21 @@ static scpi_result_t DMM_MeasureVoltageAcQ(scpi_t * context) {
     fprintf(stderr, "meas:volt:ac\r\n"); /* debug command name */
 
     /* read first parameter if present */
-    if (!SCPI_ParamNumber(context, scpi_special_numbers_def, &param1, FALSE)) {
+    if (!SCPI_ParamNumber(context, get_scpi_special_numbers_def(), &param1, FALSE)) {
         /* do something, if parameter not present */
     }
 
     /* read second paraeter if present */
-    if (!SCPI_ParamNumber(context, scpi_special_numbers_def, &param2, FALSE)) {
+    if (!SCPI_ParamNumber(context, get_scpi_special_numbers_def(), &param2, FALSE)) {
         /* do something, if parameter not present */
     }
 
 
-    SCPI_NumberToStr(context, scpi_special_numbers_def, &param1, bf, 15);
+    SCPI_NumberToStr(context, get_scpi_special_numbers_def(), &param1, bf, 15);
     fprintf(stderr, "\tP1=%s\r\n", bf);
 
 
-    SCPI_NumberToStr(context, scpi_special_numbers_def, &param2, bf, 15);
+    SCPI_NumberToStr(context, get_scpi_special_numbers_def(), &param2, bf, 15);
     fprintf(stderr, "\tP2=%s\r\n", bf);
 
     SCPI_ResultDouble(context, 0);
@@ -389,6 +411,7 @@ const scpi_command_t scpi_commands[] = {
 
     /* DMM */
     {.pattern = "MEASure:VOLTage:DC?", .callback = DMM_MeasureVoltageDcQ,},
+    {.pattern = "MEASure:VOLTage:DC", .callback = DMM_MeasureVoltageDc,},
     {.pattern = "CONFigure:VOLTage:DC", .callback = DMM_ConfigureVoltageDc,},
     {.pattern = "MEASure:VOLTage:DC:RATio?", .callback = SCPI_StubQ,},
     {.pattern = "MEASure:VOLTage:AC?", .callback = DMM_MeasureVoltageAcQ,},
