@@ -222,7 +222,7 @@ static int init_suite(void) {
     SCPI_Init(&scpi_context,
             scpi_commands,
             &scpi_interface,
-            scpi_units_def,
+            get_scpi_units_def(),
             "MA", "IN", NULL, "VER",
             scpi_input_buffer, SCPI_INPUT_BUFFER_LENGTH,
             scpi_error_queue_data, SCPI_ERROR_QUEUE_SIZE);
@@ -1073,7 +1073,7 @@ static void testChannelList(void) {
     scpi_context.param_list.lex_state.buffer = data;                                    \
     scpi_context.param_list.lex_state.len = strlen(scpi_context.param_list.lex_state.buffer);\
     scpi_context.param_list.lex_state.pos = scpi_context.param_list.lex_state.buffer;   \
-    result = SCPI_ParamNumber(&scpi_context, scpi_special_numbers_def, &value, mandatory);\
+    result = SCPI_ParamNumber(&scpi_context, get_scpi_special_numbers_def(), &value, mandatory);\
                                                                                         \
     SCPI_ErrorPop(&scpi_context, &errCode);                                             \
     CU_ASSERT_EQUAL(result, expected_result);                                           \
@@ -1488,7 +1488,7 @@ static void testNumberToStr(void) {
     if (number.special) { number.content.tag = (int)(_value); } else { number.content.value = (_value); }\
     char buffer[100 + 1];\
     size_t res_len;\
-    res_len = SCPI_NumberToStr(&scpi_context, scpi_special_numbers_def, &number, buffer, 100);\
+    res_len = SCPI_NumberToStr(&scpi_context, get_scpi_special_numbers_def(), &number, buffer, 100);\
     CU_ASSERT_STRING_EQUAL(buffer, expected_result);\
     CU_ASSERT_EQUAL(res_len, strlen(expected_result));\
 } while(0)
@@ -1502,7 +1502,7 @@ static void testNumberToStr(void) {
     char buffer[100];\
     memset(buffer, 0xaa, 100);\
     size_t res_len;\
-    res_len = SCPI_NumberToStr(&scpi_context, scpi_special_numbers_def, &number, buffer, limit);\
+    res_len = SCPI_NumberToStr(&scpi_context, get_scpi_special_numbers_def(), &number, buffer, limit);\
     size_t expected_len = SCPIDEFINE_strnlen(expected_result, limit - 1);\
     CU_ASSERT_NSTRING_EQUAL(buffer, expected_result, expected_len);\
     CU_ASSERT_EQUAL(buffer[expected_len], 0);\
