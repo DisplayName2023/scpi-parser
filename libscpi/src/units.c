@@ -286,6 +286,16 @@ const scpi_choice_def_t scpi_special_numbers_def[] = {
     SCPI_CHOICE_LIST_END,
 };
 
+scpi_unit_def_t* get_scpi_units_def()
+{
+    return scpi_units_def;
+}
+scpi_choice_def_t* get_scpi_special_numbers_def()
+{
+    return scpi_special_numbers_def;
+}
+
+
 /**
  * Convert string describing unit to its representation
  * @param units units patterns
