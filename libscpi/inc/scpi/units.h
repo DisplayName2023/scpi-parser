@@ -47,6 +47,10 @@ extern "C" {
     extern const scpi_unit_def_t scpi_units_def[];
     extern const scpi_choice_def_t scpi_special_numbers_def[];
 
+    scpi_unit_def_t* get_scpi_units_def();
+    scpi_choice_def_t* get_scpi_special_numbers_def();
+
+
     scpi_bool_t SCPI_ParamNumber(scpi_t * context, const scpi_choice_def_t * special, scpi_number_t * value, scpi_bool_t mandatory);
 
     scpi_bool_t SCPI_ParamTranslateNumberVal(scpi_t * context, scpi_parameter_t * parameter);

@@ -21,6 +21,9 @@ project(scpi_parser VERSION 2.1.0 LANGUAGES C)
 # if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 #    add_compile_options(-Wextra -Wmissing-prototypes -Wimplicit)
 
+# Automatically collect header files
+file(GLOB HEADERS "inc/scpi/*.h")
+
 # Source files
 set(SOURCES
     src/error.c
@@ -43,12 +46,15 @@ set(SOURCES
 if(BUILD_SHARED_LIBS)
     message(STATUS "Building shared library")
     # Create shared library
-    add_library(scpi SHARED ${SOURCES})
+    add_library(scpi SHARED 
+        ${HEADERS}
+        ${SOURCES}
+    )
     set_target_properties(scpi PROPERTIES
         OUTPUT_NAME scpi
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR}
-        PUBLIC_HEADER "inc/scpi/scpi.h;inc/scpi/constants.h;inc/scpi/error.h;inc/scpi/ieee488.h;inc/scpi/minimal.h;inc/scpi/parser.h;inc/scpi/types.h;inc/scpi/units.h;inc/scpi/expression.h"
+        PUBLIC_HEADER "${HEADERS}"
     )
     
     # Windows-specific configuration for shared libraries
@@ -83,7 +89,7 @@ else()
     add_library(scpi STATIC ${SOURCES})
     set_target_properties(scpi PROPERTIES
         OUTPUT_NAME scpi
-        PUBLIC_HEADER "inc/scpi/scpi.h;inc/scpi/constants.h;inc/scpi/error.h;inc/scpi/ieee488.h;inc/scpi/minimal.h;inc/scpi/parser.h;inc/scpi/types.h;inc/scpi/units.h;inc/scpi/expression.h"
+        PUBLIC_HEADER "${HEADERS}"
         ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     )
     target_include_directories(scpi PUBLIC inc)
@@ -91,8 +97,7 @@ else()
         target_link_libraries(scpi PRIVATE m)
     endif()
     
-    # Create alias for backwards compatibility
-    add_library(scpi-static ALIAS scpi)
+
     add_library(scpi-shared ALIAS scpi)
 endif()
 
