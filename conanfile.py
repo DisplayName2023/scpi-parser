@@ -29,6 +29,7 @@ class ScpiParserRecipe(ConanFile):
     def requirements(self):
         # self.requires("cunit/2.1-3")
         self.requires("conan_cunit/2.1-3")
+        self.requires("gtest/1.14.0")
 
     def layout(self):
         cmake_layout(self, src_folder=".")
