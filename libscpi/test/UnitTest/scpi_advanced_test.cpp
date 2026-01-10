@@ -248,6 +248,30 @@ protected:
         return SCPI_RES_OK;
     }
     
+    // Command handler for JSON-like string parameter
+    static scpi_result_t TestJsonString(scpi_t* context) {
+        const char* json_str;
+        size_t len;
+
+        if (!SCPI_ParamCharacters(context, &json_str, &len, TRUE)) {
+            return SCPI_RES_ERR;
+        }
+
+        test_json_string.assign(json_str, len);
+        return SCPI_RES_OK;
+    }
+
+    static scpi_result_t TestJsonStringQuery(scpi_t* context) {
+        if (test_json_string.empty()) {
+            SCPI_ResultText(context, "");
+            return SCPI_RES_OK;
+        }
+        SCPI_ResultText(context, test_json_string.c_str());
+        return SCPI_RES_OK;
+    }
+
+    static std::string test_json_string;
+
     static scpi_bool_t test_bool_value;
     
     // Command list
@@ -266,6 +290,7 @@ int_fast16_t SCPIAdvancedTest::err_buffer[128] = {0};
 size_t SCPIAdvancedTest::err_buffer_pos = 0;
 char SCPIAdvancedTest::scpi_input_buffer[SCPI_INPUT_BUFFER_LENGTH] = "";
 scpi_error_t SCPIAdvancedTest::scpi_error_queue_data[SCPI_ERROR_QUEUE_SIZE] = {};
+std::string SCPIAdvancedTest::test_json_string;
 
 // Command definitions
 const scpi_command_t SCPIAdvancedTest::scpi_commands[] = {
@@ -284,7 +309,9 @@ const scpi_command_t SCPIAdvancedTest::scpi_commands[] = {
     {.pattern = "TEST:FLOat", .callback = TestFloatSet},
     {.pattern = "TEST:FLOat?", .callback = TestFloatQuery},
     {.pattern = "TEST:MULTi", .callback = TestMultiParamSet},
-    
+    {.pattern = "TEST:SCPI", .callback = TestJsonString},
+    {.pattern = "TEST:SCPI?", .callback = TestJsonStringQuery},
+
     SCPI_CMD_LIST_END
 };
 
@@ -401,4 +428,27 @@ TEST_F(SCPIAdvancedTest, TestArbitraryBlockBasic) {
     // The parsing depends on the exact format expected
     // This test demonstrates the structure
     EXPECT_FALSE(hasError() || hasError()); // May or may not error depending on format
+}
+
+// JSON-like string test
+TEST_F(SCPIAdvancedTest, TestJsonString) {
+    // SCPI uses double quotes with escaped double quotes inside: " ""
+    std::string result = executeCommand("TEST:SCPI \"{ \"\"Voltage\"\", 1.0, \"\"Mode\"\", \"\"A\"\" }\"\r\n");
+    EXPECT_FALSE(hasError());
+    EXPECT_EQ(test_json_string, R"({ ""Voltage"", 1.0, ""Mode"", ""A"" })");
+}
+
+TEST_F(SCPIAdvancedTest, TestJsonStringQuery) {
+    test_json_string = "{ \"Voltage\", 1.0, \"Mode\", \"A\" }";
+    std::string result = executeCommand("TEST:SCPI?\r\n");
+    EXPECT_FALSE(hasError());
+    EXPECT_NE(result.find(R"({ ""Voltage"", 1.0, ""Mode"", ""A"" })"), std::string::npos);
+}
+
+TEST_F(SCPIAdvancedTest, TestJsonStringEmpty) {
+    test_json_string = "";
+    std::string result = executeCommand("TEST:SCPI?\r\n");
+    EXPECT_FALSE(hasError());
+    // Empty string query should return empty quotes ""
+    EXPECT_NE(result.find("\"\""), std::string::npos);
 }
