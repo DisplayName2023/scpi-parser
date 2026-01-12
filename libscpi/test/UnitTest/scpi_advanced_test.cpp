@@ -478,6 +478,8 @@ TEST_F(SCPIAdvancedTest, TestJsonString) {
 	std::cout << queryResult << std::endl;
 }
 
+
+
 TEST_F(SCPIAdvancedTest, TestJsonStringQuery) {
     test_json_string =  R"({ "Voltage": 1.0, "Mode": "A" })";
     std::string result = executeCommand("TEST:SCPI?\r\n");
@@ -486,6 +488,28 @@ TEST_F(SCPIAdvancedTest, TestJsonStringQuery) {
     std::string deEscaped = deEscape(result.substr(1, result.size() - 2));
     EXPECT_NE(deEscaped.find(test_json_string), std::string::npos);
 }
+
+
+TEST_F(SCPIAdvancedTest, TestJsonStringSingleQuots) {
+    // SCPI uses double quotes with escaped double quotes inside: " ""
+    std::string text = R"({ 'Voltage': 1.0, 'Mode': 'A' })";
+    std::string cmd = std::format("TEST:SCPI \"{}\"\r\n", text);
+    std::string result = executeCommand(cmd.c_str());
+    EXPECT_FALSE(hasError());
+    EXPECT_EQ(deEscape(test_json_string), text);
+
+    std::string queryResult = executeCommand("TEST:SCPI?\r\n");
+    std::cout << queryResult << std::endl;
+}
+TEST_F(SCPIAdvancedTest, TestJsonStringQuerySingleQuots) {
+    test_json_string = R"({ 'Voltage': 1.0, 'Mode': 'A' })";
+    std::string result = executeCommand("TEST:SCPI?\r\n");
+    EXPECT_FALSE(hasError());
+
+    std::string trimmed = result.substr(1, result.size() - 2);
+    EXPECT_NE(trimmed.find(test_json_string), std::string::npos);
+}
+
 
 TEST_F(SCPIAdvancedTest, TestJsonStringEmpty) {
     test_json_string = "";
