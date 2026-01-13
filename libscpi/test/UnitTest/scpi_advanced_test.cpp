@@ -250,17 +250,18 @@ protected:
         
         return SCPI_RES_OK;
     }
+
     
     // Command handler for JSON-like string parameter
     static scpi_result_t TestJsonString(scpi_t* context) {
-        const char* json_str;
+        char buffer[2048];
         size_t len;
 
-        if (!SCPI_ParamCharacters(context, &json_str, &len, TRUE)) {
+        if (!SCPI_ParamCopyText(context, buffer, sizeof(buffer), & len, TRUE)) {
             return SCPI_RES_ERR;
         }
 
-        test_json_string.assign(json_str, len);
+        test_json_string.assign(buffer, len);
         return SCPI_RES_OK;
     }
 
@@ -472,7 +473,7 @@ TEST_F(SCPIAdvancedTest, TestJsonString) {
     std::string cmd = std::format("TEST:SCPI \"{}\"\r\n", escapeQuots(text));
     std::string result = executeCommand(cmd.c_str());
     EXPECT_FALSE(hasError());
-    EXPECT_EQ(deEscape( test_json_string), text);
+    EXPECT_EQ(test_json_string, text);
 
     std::string queryResult = executeCommand("TEST:SCPI?\r\n");
 	std::cout << queryResult << std::endl;
